@@ -1,0 +1,70 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+*.egg
+.eggs
+dist
+build
+
+# Virtual environments
+.venv
+venv
+env
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+.tox
+.nox
+
+# Data (mount as volume instead)
+data/raw
+data/processed
+datasets
+
+# Large files
+*.pt
+*.pth
+*.onnx
+*.engine
+!weights/.gitkeep
+
+# Outputs
+outputs
+runs
+wandb
+mlruns
+logs
+
+# Temp
+*.tmp
+*.temp
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Notebooks (not needed in production)
+notebooks
+*.ipynb
+
+# Documentation
+docs
+*.md
+!README.md
