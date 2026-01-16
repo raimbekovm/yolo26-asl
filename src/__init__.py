@@ -12,7 +12,7 @@ Example:
 """
 
 __version__ = "1.0.0"
-__author__ = "Your Name"
+__author__ = "Murat Raimbekov"
 __license__ = "Apache-2.0"
 
 from src.utils.logger import setup_logger

@@ -10,10 +10,10 @@ readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.9,<3.13"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Murat Raimbekov", email = "murat.raimbekov2004@gmail.com"}
 ]
 maintainers = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Murat Raimbekov", email = "murat.raimbekov2004@gmail.com"}
 ]
 keywords = [
     "yolo26", "yolo", "ultralytics",
@@ -112,11 +112,11 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/yolo26-asl"
-Documentation = "https://yourusername.github.io/yolo26-asl"
-Repository = "https://github.com/yourusername/yolo26-asl"
-Issues = "https://github.com/yourusername/yolo26-asl/issues"
-Changelog = "https://github.com/yourusername/yolo26-asl/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/raimbekovm/yolo26-asl"
+Documentation = "https://raimbekovm.github.io/yolo26-asl"
+Repository = "https://github.com/raimbekovm/yolo26-asl"
+Issues = "https://github.com/raimbekovm/yolo26-asl/issues"
+Changelog = "https://github.com/raimbekovm/yolo26-asl/blob/main/CHANGELOG.md"
 
 [project.scripts]
 yolo26-asl = "src.cli:main"
