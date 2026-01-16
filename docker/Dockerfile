@@ -2,7 +2,7 @@
 # Multi-stage build for smaller image size
 
 # ============== Builder Stage ==============
-FROM python:3.11-slim as builder
+FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -e ".[app]"
 
 # ============== Runtime Stage ==============
-FROM python:3.11-slim as runtime
+FROM python:3.11-slim AS runtime
 
 WORKDIR /app
 
@@ -47,7 +47,6 @@ COPY src/ ./src/
 COPY app/ ./app/
 COPY configs/ ./configs/
 COPY weights/ ./weights/
-COPY assets/ ./assets/
 
 # Create necessary directories
 RUN mkdir -p data outputs
