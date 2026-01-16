@@ -1,0 +1,53 @@
+# ==================== Batch Inference Configuration ====================
+
+name: batch
+
+# Device settings
+device: ${device.type}
+precision: fp16
+
+# YOLO26-pose settings
+pose:
+  weights: weights/yolo26n-pose-hands.pt
+  imgsz: 640
+  conf: 0.25
+  iou: 0.7
+  max_det: 10
+
+# Classifier settings
+classifier:
+  weights: weights/asl_classifier.pt
+  conf_threshold: 0.5
+
+# Input
+input:
+  source: data/test  # Directory or file path
+  recursive: true
+  extensions: [.jpg, .jpeg, .png, .bmp, .webp]
+
+# Batch processing
+batch:
+  size: 32
+  num_workers: ${device.num_workers}
+
+# Output
+output:
+  save_dir: outputs/predictions
+  save_images: true
+  save_labels: true  # YOLO format labels
+  save_json: true    # COCO format results
+  save_csv: true     # Simple CSV with predictions
+
+# Visualization (for saved images)
+visualization:
+  show_keypoints: true
+  show_skeleton: true
+  show_bbox: true
+  show_confidence: true
+  show_prediction: true
+
+# Logging
+logging:
+  progress_bar: true
+  log_predictions: true
+  log_confidence: true

@@ -1,0 +1,88 @@
+# ==================== Ultralytics Hand Keypoints Dataset ====================
+# Source: https://docs.ultralytics.com/datasets/pose/hand-keypoints/
+# 26,768 images with 21 hand keypoints annotated
+
+name: hand_keypoints
+version: "1.0"
+
+# Download settings (auto-download via Ultralytics)
+download:
+  auto: true  # Ultralytics handles download
+  url: "https://github.com/ultralytics/assets/releases/download/v0.0.0/hand-keypoints.zip"
+  size_gb: 0.8
+
+# Dataset paths (relative to data root)
+paths:
+  train: images/train
+  val: images/val
+
+# Dataset statistics
+statistics:
+  total_images: 26768
+  train_images: 18776
+  val_images: 7992
+
+# Keypoint configuration
+keypoints:
+  num_keypoints: 21
+  dimensions: 3  # x, y, visibility
+  kpt_shape: [21, 3]
+
+  # Keypoint names (MediaPipe convention)
+  names:
+    - wrist
+    - thumb_cmc
+    - thumb_mcp
+    - thumb_ip
+    - thumb_tip
+    - index_mcp
+    - index_pip
+    - index_dip
+    - index_tip
+    - middle_mcp
+    - middle_pip
+    - middle_dip
+    - middle_tip
+    - ring_mcp
+    - ring_pip
+    - ring_dip
+    - ring_tip
+    - pinky_mcp
+    - pinky_pip
+    - pinky_dip
+    - pinky_tip
+
+  # Flip indices for horizontal augmentation
+  flip_idx: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+
+  # Skeleton connections for visualization
+  skeleton:
+    - [0, 1]   # wrist -> thumb_cmc
+    - [1, 2]   # thumb_cmc -> thumb_mcp
+    - [2, 3]   # thumb_mcp -> thumb_ip
+    - [3, 4]   # thumb_ip -> thumb_tip
+    - [0, 5]   # wrist -> index_mcp
+    - [5, 6]   # index_mcp -> index_pip
+    - [6, 7]   # index_pip -> index_dip
+    - [7, 8]   # index_dip -> index_tip
+    - [0, 9]   # wrist -> middle_mcp
+    - [9, 10]  # middle_mcp -> middle_pip
+    - [10, 11] # middle_pip -> middle_dip
+    - [11, 12] # middle_dip -> middle_tip
+    - [0, 13]  # wrist -> ring_mcp
+    - [13, 14] # ring_mcp -> ring_pip
+    - [14, 15] # ring_pip -> ring_dip
+    - [15, 16] # ring_dip -> ring_tip
+    - [0, 17]  # wrist -> pinky_mcp
+    - [17, 18] # pinky_mcp -> pinky_pip
+    - [18, 19] # pinky_pip -> pinky_dip
+    - [19, 20] # pinky_dip -> pinky_tip
+
+# YOLO dataset YAML (for Ultralytics training)
+yolo_yaml:
+  path: hand-keypoints
+  train: images/train
+  val: images/val
+  kpt_shape: [21, 3]
+  names:
+    0: hand

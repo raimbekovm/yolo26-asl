@@ -1,0 +1,64 @@
+# ==================== YOLO26-ASL Main Configuration ====================
+# Hydra configuration entry point
+# Override with: python -m src.training.trainer data=combined model=yolo26s_pose
+
+defaults:
+  - _self_
+  - data: combined
+  - model: yolo26n_pose
+  - training: default
+  - inference: realtime
+  - override hydra/hydra_logging: disabled
+  - override hydra/job_logging: disabled
+
+# ==================== Project Settings ====================
+project:
+  name: yolo26-asl
+  version: "1.0.0"
+  description: "ASL Recognition with YOLO26-pose"
+
+# ==================== Paths ====================
+paths:
+  root: ${hydra:runtime.cwd}
+  data: ${paths.root}/data
+  raw: ${paths.data}/raw
+  processed: ${paths.data}/processed
+  weights: ${paths.root}/weights
+  outputs: ${paths.root}/outputs
+  logs: ${paths.outputs}/logs
+
+# ==================== Hardware ====================
+device:
+  type: auto  # auto, cpu, cuda, cuda:0, mps
+  precision: fp16  # fp32, fp16, bf16
+  num_workers: 4
+  pin_memory: true
+
+# ==================== Random Seed ====================
+seed: 42
+deterministic: false
+
+# ==================== Logging ====================
+logging:
+  level: INFO
+  console: true
+  file: true
+  rich: true
+
+# ==================== Experiment Tracking ====================
+tracking:
+  enabled: false
+  backend: wandb  # wandb, mlflow, tensorboard
+  project: ${project.name}
+  run_name: null  # auto-generated if null
+  tags: []
+
+# ==================== Hydra Configuration ====================
+hydra:
+  run:
+    dir: ${paths.outputs}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ${paths.outputs}/sweeps/${now:%Y-%m-%d}
+    subdir: ${hydra.job.num}
+  job:
+    chdir: false

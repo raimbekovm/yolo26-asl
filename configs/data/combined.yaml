@@ -1,0 +1,81 @@
+# ==================== Combined Dataset Configuration ====================
+# Merges SignAlphaSet (for ASL labels) + Hand Keypoints (for pose training)
+
+name: combined
+version: "1.0"
+
+# Component datasets
+datasets:
+  - signalphaset
+  - hand_keypoints
+
+# Total statistics (after combination)
+statistics:
+  total_images: 52768  # 26000 + 26768
+  train_images: 42214  # 80%
+  val_images: 7915     # 15%
+  test_images: 2639    # 5%
+
+# Pipeline stages
+stages:
+  # Stage 1: Train YOLO26-pose on hand keypoints
+  pose_training:
+    dataset: hand_keypoints
+    description: "Fine-tune YOLO26-pose for hand detection"
+
+  # Stage 2: Extract keypoints from SignAlphaSet
+  keypoint_extraction:
+    dataset: signalphaset
+    model: yolo26_pose_finetuned
+    description: "Extract 21 keypoints from ASL images"
+
+  # Stage 3: Train classifier on keypoints
+  classifier_training:
+    input: keypoints
+    labels: signalphaset
+    description: "Train ASL letter classifier"
+
+# Data split
+split:
+  train: 0.8
+  val: 0.15
+  test: 0.05
+  stratified: true
+  random_state: ${seed}
+
+# Augmentation (applied during training)
+augmentation:
+  enabled: true
+  config:
+    # Spatial transforms
+    horizontal_flip: 0.5
+    rotation: 15
+    scale: [0.8, 1.2]
+    translate: 0.1
+
+    # Color transforms
+    brightness: 0.2
+    contrast: 0.2
+    saturation: 0.2
+    hue: 0.1
+
+    # Noise
+    gaussian_noise: 0.01
+
+    # Keypoint-specific
+    keypoint_dropout: 0.05  # Randomly drop keypoints for robustness
+
+# Preprocessing
+preprocessing:
+  resize: [640, 640]
+  normalize: true
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+
+# DataLoader settings
+dataloader:
+  batch_size: 32
+  num_workers: ${device.num_workers}
+  pin_memory: ${device.pin_memory}
+  shuffle: true
+  drop_last: false

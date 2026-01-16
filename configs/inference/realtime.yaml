@@ -1,0 +1,71 @@
+# ==================== Real-time Inference Configuration ====================
+
+name: realtime
+
+# Device settings
+device: ${device.type}
+precision: fp16
+
+# YOLO26-pose settings
+pose:
+  weights: weights/yolo26n-pose-hands.pt
+  imgsz: 640
+  conf: 0.5
+  iou: 0.7
+  max_det: 4  # Max hands to detect
+
+# Classifier settings
+classifier:
+  weights: weights/asl_classifier.pt
+  conf_threshold: 0.7
+
+# Input source
+source:
+  type: webcam  # webcam, video, image
+  camera_id: 0
+  width: 1280
+  height: 720
+  fps: 30
+
+# Processing
+processing:
+  # Frame skipping for performance
+  skip_frames: 0
+
+  # Temporal smoothing
+  smoothing:
+    enabled: true
+    window_size: 5
+    method: mode  # mode, mean, exponential
+
+  # Stability filter (require N consecutive same predictions)
+  stability:
+    enabled: true
+    min_consecutive: 3
+
+# Visualization
+visualization:
+  show_keypoints: true
+  show_skeleton: true
+  show_bbox: true
+  show_confidence: true
+  show_fps: true
+  show_prediction: true
+
+  # Colors (BGR)
+  keypoint_color: [0, 255, 0]
+  skeleton_color: [255, 255, 0]
+  bbox_color: [0, 255, 255]
+  text_color: [255, 255, 255]
+
+  # Sizes
+  keypoint_radius: 5
+  line_thickness: 2
+  font_scale: 1.0
+
+# Output
+output:
+  display: true
+  save_video: false
+  save_path: outputs/realtime_output.mp4
+  codec: mp4v

@@ -1,0 +1,52 @@
+# ==================== ASL Classifier (Transformer) Configuration ====================
+# Transformer-based classifier for keypoint sequences
+
+name: asl_classifier_transformer
+type: transformer
+
+# Input specification
+input:
+  num_keypoints: 21
+  keypoint_dims: 3
+  sequence_length: 1  # Single frame (increase for video)
+
+# Output specification
+output:
+  num_classes: 31
+
+# Architecture
+architecture:
+  # Embedding
+  embed_dim: 128
+  keypoint_embed: true
+
+  # Transformer encoder
+  num_layers: 4
+  num_heads: 4
+  mlp_ratio: 4.0
+  qkv_bias: true
+
+  # Pooling
+  pool: cls  # cls, mean, max
+
+  # Classification head
+  head_hidden: 256
+  head_dropout: 0.3
+
+# Positional encoding
+positional_encoding:
+  type: learnable  # learnable, sinusoidal, none
+  max_len: 21
+
+# Regularization
+regularization:
+  dropout: 0.1
+  attention_dropout: 0.1
+  drop_path: 0.1
+  weight_decay: 0.05
+  label_smoothing: 0.1
+
+# Initialization
+init:
+  method: trunc_normal
+  std: 0.02

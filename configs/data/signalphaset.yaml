@@ -1,0 +1,80 @@
+# ==================== SignAlphaSet Dataset Configuration ====================
+# Source: https://data.mendeley.com/datasets/8fmvr9m98w/3
+# 26,000 images + 300 videos of ASL alphabet (A-Z) + 5 gestures
+
+name: signalphaset
+version: "3"
+
+# Download settings
+download:
+  url: "https://data.mendeley.com/datasets/8fmvr9m98w/3"
+  doi: "10.17632/8fmvr9m98w.3"
+  manual: true  # Requires manual download from Mendeley
+  size_gb: 2.5
+
+# Dataset structure
+structure:
+  images_dir: images
+  videos_dir: videos
+  total_images: 26000
+  total_videos: 300
+
+# Classes
+classes:
+  letters:
+    - A
+    - B
+    - C
+    - D
+    - E
+    - F
+    - G
+    - H
+    - I
+    - J
+    - K
+    - L
+    - M
+    - N
+    - O
+    - P
+    - Q
+    - R
+    - S
+    - T
+    - U
+    - V
+    - W
+    - X
+    - Y
+    - Z
+  gestures:
+    - Hello
+    - ThankYou
+    - Sorry
+    - "Yes"
+    - "No"
+
+num_classes: 31  # 26 letters + 5 gestures
+
+# Image properties
+image:
+  resolution: [1080, 1920]  # height, width
+  format: jpg
+  per_letter_right: 750
+  per_letter_left: 250
+
+# Split configuration
+split:
+  train: 0.8
+  val: 0.15
+  test: 0.05
+  stratified: true
+  random_state: ${seed}
+
+# Preprocessing
+preprocessing:
+  resize: [640, 640]
+  normalize: true
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]

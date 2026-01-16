@@ -1,0 +1,73 @@
+# ==================== ASL Classifier (MLP) Configuration ====================
+# Lightweight MLP classifier for keypoint-based ASL recognition
+
+name: asl_classifier_mlp
+type: mlp
+
+# Input specification
+input:
+  # 21 keypoints × 3 values (x, y, visibility) = 63 features
+  num_keypoints: 21
+  keypoint_dims: 3
+  flatten: true
+  input_size: 63  # 21 * 3
+
+  # Optional: add hand bbox features
+  include_bbox: false
+  bbox_dims: 4  # x, y, w, h (normalized)
+
+# Output specification
+output:
+  num_classes: 31  # 26 letters + 5 gestures
+  classes:
+    - A
+    - B
+    - C
+    - D
+    - E
+    - F
+    - G
+    - H
+    - I
+    - J
+    - K
+    - L
+    - M
+    - N
+    - O
+    - P
+    - Q
+    - R
+    - S
+    - T
+    - U
+    - V
+    - W
+    - X
+    - Y
+    - Z
+    - Hello
+    - ThankYou
+    - Sorry
+    - "Yes"
+    - "No"
+
+# Architecture
+architecture:
+  hidden_layers:
+    - 256
+    - 128
+    - 64
+  activation: relu
+  dropout: 0.3
+  batch_norm: true
+
+# Regularization
+regularization:
+  weight_decay: 1e-4
+  label_smoothing: 0.1
+
+# Initialization
+init:
+  method: kaiming_normal
+  nonlinearity: relu

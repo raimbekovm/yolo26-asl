@@ -1,0 +1,120 @@
+# ==================== Production Training Configuration ====================
+# Full training for best results
+
+name: production
+
+# ==================== YOLO26-pose Training ====================
+pose:
+  epochs: 300
+  batch_size: 32
+  imgsz: 640
+
+  # Optimizer
+  optimizer: AdamW
+  lr0: 0.001
+  lrf: 0.001
+  momentum: 0.937
+  weight_decay: 0.0005
+
+  # Scheduler
+  scheduler: cosine
+  warmup_epochs: 5
+  warmup_momentum: 0.8
+  warmup_bias_lr: 0.1
+
+  # Loss weights (optimized for hand pose)
+  box: 7.5
+  cls: 0.5
+  dfl: 1.5
+  pose: 15.0  # Higher weight for pose
+  kobj: 1.5
+
+  # Strong augmentation
+  augment: true
+  hsv_h: 0.02
+  hsv_s: 0.8
+  hsv_v: 0.5
+  degrees: 10.0
+  translate: 0.15
+  scale: 0.6
+  shear: 5.0
+  perspective: 0.0001
+  flipud: 0.0
+  fliplr: 0.5
+  mosaic: 1.0
+  mixup: 0.1
+  copy_paste: 0.1
+
+  # Early stopping
+  patience: 100
+
+  # Checkpointing
+  save: true
+  save_period: 25
+  exist_ok: true
+
+  # Validation
+  val: true
+  plots: true
+
+  # Multi-scale training
+  multi_scale: true
+
+# ==================== Classifier Training ====================
+classifier:
+  epochs: 100
+  batch_size: 128
+
+  # Optimizer
+  optimizer: AdamW
+  learning_rate: 0.0005
+  weight_decay: 0.05
+  betas: [0.9, 0.999]
+
+  # Scheduler
+  scheduler: cosine_annealing_warm_restarts
+  t_0: 20
+  t_mult: 2
+  eta_min: 1e-7
+  warmup_epochs: 10
+  warmup_lr: 1e-7
+
+  # Loss
+  loss: cross_entropy
+  label_smoothing: 0.15
+
+  # Regularization
+  dropout: 0.4
+  gradient_clip: 1.0
+  mixup_alpha: 0.2
+
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 20
+    min_delta: 0.0005
+    monitor: val_accuracy
+    mode: max
+
+  # Checkpointing
+  checkpoint:
+    save_top_k: 5
+    monitor: val_accuracy
+    mode: max
+    save_last: true
+
+  # Test-time augmentation
+  tta: true
+
+# ==================== General Settings ====================
+device: ${device.type}
+seed: ${seed}
+deterministic: true
+workers: ${device.num_workers}
+verbose: true
+
+# Experiment tracking
+tracking:
+  enabled: true
+  log_model: true
+  log_artifacts: true

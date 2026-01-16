@@ -1,0 +1,57 @@
+# ==================== YOLO26s-pose Model Configuration ====================
+# Small variant - balanced speed and accuracy
+
+name: yolo26s-pose
+variant: small
+task: pose
+
+# Model specification
+architecture:
+  type: yolo26
+  size: s  # small
+  pretrained: true
+  weights: yolo26s-pose.pt
+
+# Model characteristics (from Ultralytics benchmarks)
+specs:
+  parameters: 10.4M
+  flops: 21.8B
+  map50_95: 63.0  # COCO pose benchmark
+  cpu_speed_ms: 85.3
+  gpu_speed_ms: 2.4
+
+# Pose-specific settings
+pose:
+  num_keypoints: 21
+  keypoint_dims: 3
+  kpt_shape: [21, 3]
+  use_rle: true
+  rle_loss_weight: 1.0
+  kpt_conf_threshold: 0.5
+
+# Detection settings
+detection:
+  conf_threshold: 0.25
+  iou_threshold: 0.7
+  max_detections: 10
+
+# NMS-free inference
+nms_free: true
+
+# Input settings
+input:
+  size: [640, 640]
+  channels: 3
+  normalize: true
+
+# Export settings
+export:
+  formats:
+    - onnx
+    - engine
+    - coreml
+    - tflite
+  opset: 17
+  simplify: true
+  dynamic: false
+  half: true

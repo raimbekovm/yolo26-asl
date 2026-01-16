@@ -1,0 +1,55 @@
+# ==================== Fast Development Training ====================
+# For quick debugging and testing
+
+name: fast_dev
+
+# ==================== YOLO26-pose Training ====================
+pose:
+  epochs: 5
+  batch_size: 8
+  imgsz: 320  # Smaller image size for speed
+
+  # Optimizer (same as default)
+  optimizer: AdamW
+  lr0: 0.001
+  lrf: 0.01
+  momentum: 0.937
+  weight_decay: 0.0005
+
+  # No augmentation for speed
+  augment: false
+  mosaic: 0.0
+  mixup: 0.0
+
+  # Minimal validation
+  patience: 100  # Disable early stopping
+  save_period: 1
+  plots: false
+
+# ==================== Classifier Training ====================
+classifier:
+  epochs: 10
+  batch_size: 32
+
+  optimizer: AdamW
+  learning_rate: 0.001
+  weight_decay: 0.01
+
+  scheduler: none
+  warmup_epochs: 0
+
+  early_stopping:
+    enabled: false
+
+  checkpoint:
+    save_top_k: 1
+    save_last: true
+
+# ==================== General Settings ====================
+device: ${device.type}
+seed: ${seed}
+workers: 2
+verbose: true
+
+# Subset data for speed
+data_subset: 0.1  # Use only 10% of data

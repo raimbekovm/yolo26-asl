@@ -1,0 +1,62 @@
+# ==================== YOLO26n-pose Model Configuration ====================
+# Nano variant - optimized for speed and edge deployment
+
+name: yolo26n-pose
+variant: nano
+task: pose
+
+# Model specification
+architecture:
+  type: yolo26
+  size: n  # nano
+  pretrained: true
+  weights: yolo26n-pose.pt
+
+# Model characteristics (from Ultralytics benchmarks)
+specs:
+  parameters: 2.9M
+  flops: 6.2B
+  map50_95: 57.2  # COCO pose benchmark
+  cpu_speed_ms: 40.3
+  gpu_speed_ms: 1.8
+
+# Pose-specific settings
+pose:
+  # Hand keypoints configuration
+  num_keypoints: 21
+  keypoint_dims: 3  # x, y, visibility
+  kpt_shape: [21, 3]
+
+  # RLE (Residual Log-Likelihood Estimation)
+  use_rle: true
+  rle_loss_weight: 1.0
+
+  # Keypoint confidence threshold
+  kpt_conf_threshold: 0.5
+
+# Detection settings
+detection:
+  conf_threshold: 0.25
+  iou_threshold: 0.7
+  max_detections: 10
+
+# NMS-free inference (YOLO26 feature)
+nms_free: true
+
+# Input settings
+input:
+  size: [640, 640]
+  channels: 3
+  normalize: true
+
+# Export settings
+export:
+  formats:
+    - onnx
+    - engine  # TensorRT
+    - coreml
+    - tflite
+  opset: 17
+  simplify: true
+  dynamic: false
+  half: true
