@@ -1,6 +1,5 @@
 """Tests for constants module."""
 
-
 from src.utils.constants import (
     ASL_CLASSES,
     ASL_GESTURES,
