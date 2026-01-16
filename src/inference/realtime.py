@@ -9,7 +9,7 @@ from loguru import logger
 
 from src.data.dataset import RealtimeKeypointBuffer
 from src.models.pipeline import ASLPipeline
-from src.utils.constants import ASL_CLASSES, IDX_TO_CLASS
+from src.utils.constants import IDX_TO_CLASS
 from src.utils.visualization import draw_fps, draw_hand_keypoints, draw_prediction
 
 

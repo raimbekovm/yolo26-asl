@@ -11,8 +11,8 @@ from loguru import logger
 
 from src.data.augmentation import KeypointNormalizer
 from src.models.classifier import ASLClassifier
-from src.models.hand_pose import HandDetection, HandPoseDetector
-from src.utils.constants import IDX_TO_CLASS, WEIGHTS_DIR
+from src.models.hand_pose import HandPoseDetector
+from src.utils.constants import WEIGHTS_DIR
 from src.utils.device import get_device
 
 

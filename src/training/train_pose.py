@@ -1,9 +1,13 @@
 """YOLO26-pose fine-tuning for hand keypoint detection."""
 
 from pathlib import Path
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 from loguru import logger
+
+
+if TYPE_CHECKING:
+    from ultralytics.engine.results import Results
 
 from src.utils.constants import OUTPUTS_DIR, WEIGHTS_DIR
 
@@ -150,6 +154,7 @@ class PoseTrainer:
             target = WEIGHTS_DIR / "yolo26-pose-hands.pt"
             target.parent.mkdir(parents=True, exist_ok=True)
             import shutil
+
             shutil.copy(best_weights, target)
             logger.info(f"Best weights saved to {target}")
 
@@ -176,6 +181,7 @@ class PoseTrainer:
         """
         if weights:
             from ultralytics import YOLO
+
             model = YOLO(weights)
         else:
             model = self.model
@@ -191,7 +197,9 @@ class PoseTrainer:
             "recall": results.pose.mr,
         }
 
-        logger.info(f"Validation results: mAP50={metrics['mAP50']:.3f}, mAP50-95={metrics['mAP50-95']:.3f}")
+        logger.info(
+            f"Validation results: mAP50={metrics['mAP50']:.3f}, mAP50-95={metrics['mAP50-95']:.3f}"
+        )
 
         return metrics
 
@@ -220,6 +228,7 @@ class PoseTrainer:
         """
         if weights:
             from ultralytics import YOLO
+
             model = YOLO(weights)
         else:
             model = self.model

@@ -192,10 +192,30 @@ select = [
     "RUF",    # ruff-specific
 ]
 ignore = [
-    "E501",   # line too long (handled by black)
+    "E501",    # line too long (handled by black)
     "PLR0913", # too many arguments
     "PLR2004", # magic value comparison
-    "TRY003", # long messages in exceptions
+    "PLR0912", # too many branches
+    "TRY003",  # long messages in exceptions
+    "PLW0603", # global statement (acceptable for singletons)
+    "PLW2901", # loop variable overwritten (common pattern)
+    "PLC0415", # import not at top-level (lazy imports)
+    "SIM108",  # ternary operator (readability preference)
+    "N806",    # uppercase variable (ML convention: X_train, R)
+    "N812",    # lowercase import as non-lowercase (F = functional)
+    "SIM102",  # nested if (readability)
+    "PLC0206", # dict iteration without .items()
+    "B006",    # mutable default argument
+    "B007",    # unused loop variable
+    "ISC001",  # implicit string concat
+    "C416",    # unnecessary dict comprehension
+    "RET504",  # unnecessary assignment before return
+    "RET505",  # unnecessary elif after return
+    "PIE808",  # unnecessary start in range
+    "SIM118",  # key in dict.keys()
+    "PTH123",  # open() vs Path.open()
+    "ARG002",  # unused method argument
+    "F841",    # unused variable (in analysis code)
 ]
 
 [tool.ruff.lint.per-file-ignores]

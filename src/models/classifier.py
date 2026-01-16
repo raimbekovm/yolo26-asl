@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import Optional, Union
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
+from torch import nn
 
 from src.utils.constants import ASL_CLASSES, IDX_TO_CLASS, NUM_KEYPOINTS
 
@@ -340,7 +340,6 @@ def create_classifier(
     """
     if model_type == "mlp":
         return ASLClassifierMLP(**kwargs)
-    elif model_type == "transformer":
+    if model_type == "transformer":
         return ASLClassifierTransformer(**kwargs)
-    else:
-        raise ValueError(f"Unknown model type: {model_type}")
+    raise ValueError(f"Unknown model type: {model_type}")

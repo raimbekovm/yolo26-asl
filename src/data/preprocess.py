@@ -1,7 +1,6 @@
 """Data preprocessing pipeline for ASL recognition."""
 
 import json
-import shutil
 from pathlib import Path
 from typing import Optional
 
@@ -54,6 +53,7 @@ class DataPreprocessor:
         """Lazy load pose model."""
         if self._pose_model is None:
             from ultralytics import YOLO
+
             logger.info(f"Loading pose model: {self.pose_model_name}")
             self._pose_model = YOLO(self.pose_model_name)
         return self._pose_model
@@ -79,8 +79,7 @@ class DataPreprocessor:
 
         if not input_dir.exists():
             raise FileNotFoundError(
-                f"SignAlphaSet not found at {input_dir}. "
-                "Run 'make download-signalphaset' first."
+                f"SignAlphaSet not found at {input_dir}. " "Run 'make download-signalphaset' first."
             )
 
         logger.info(f"Processing SignAlphaSet from {input_dir}")
@@ -104,9 +103,7 @@ class DataPreprocessor:
             images = list(class_dir.glob("*.jpg")) + list(class_dir.glob("*.png"))
 
             for img_path in tqdm(images, desc=class_name):
-                sample = self._extract_keypoints(
-                    img_path, class_name, class_idx, conf_threshold
-                )
+                sample = self._extract_keypoints(img_path, class_name, class_idx, conf_threshold)
                 if sample is not None:
                     all_samples.append(sample)
 
@@ -121,9 +118,7 @@ class DataPreprocessor:
         np.save(output_dir / "keypoints.npy", keypoints)
         np.save(output_dir / "labels.npy", labels)
 
-        logger.info(
-            f"Processed {len(all_samples)} samples, saved to {output_dir}"
-        )
+        logger.info(f"Processed {len(all_samples)} samples, saved to {output_dir}")
 
         return output_dir
 
@@ -221,7 +216,8 @@ class DataPreprocessor:
         test_ratio = 1 - train_ratio - val_ratio
 
         X_train, X_temp, y_train, y_temp = train_test_split(
-            keypoints, labels,
+            keypoints,
+            labels,
             test_size=(1 - train_ratio),
             random_state=random_state,
             stratify=labels,
@@ -229,7 +225,8 @@ class DataPreprocessor:
 
         val_size = val_ratio / (val_ratio + test_ratio)
         X_val, X_test, y_val, y_test = train_test_split(
-            X_temp, y_temp,
+            X_temp,
+            y_temp,
             test_size=(1 - val_size),
             random_state=random_state,
             stratify=y_temp,

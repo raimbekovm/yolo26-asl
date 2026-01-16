@@ -92,12 +92,11 @@ def get_optimal_workers(device: torch.device) -> int:
     if device.type == "cuda":
         # For GPU training, use more workers for data loading
         return min(8, cpu_count)
-    elif device.type == "mps":
+    if device.type == "mps":
         # MPS works well with fewer workers
         return min(4, cpu_count)
-    else:
-        # CPU training - leave some cores for model
-        return max(1, cpu_count - 2)
+    # CPU training - leave some cores for model
+    return max(1, cpu_count - 2)
 
 
 def set_seed(seed: int, deterministic: bool = False) -> None:
@@ -140,14 +139,15 @@ def get_device_info() -> dict:
     }
 
     if torch.cuda.is_available():
-        info.update({
-            "cuda_version": torch.version.cuda,
-            "cudnn_version": torch.backends.cudnn.version(),
-            "gpu_count": torch.cuda.device_count(),
-            "gpu_names": [
-                torch.cuda.get_device_name(i)
-                for i in range(torch.cuda.device_count())
-            ],
-        })
+        info.update(
+            {
+                "cuda_version": torch.version.cuda,
+                "cudnn_version": torch.backends.cudnn.version(),
+                "gpu_count": torch.cuda.device_count(),
+                "gpu_names": [
+                    torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())
+                ],
+            }
+        )
 
     return info

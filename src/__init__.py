@@ -17,5 +17,6 @@ __license__ = "Apache-2.0"
 
 from src.utils.logger import setup_logger
 
+
 # Setup default logger
 logger = setup_logger(__name__)

@@ -13,13 +13,40 @@ OUTPUTS_DIR: Final[Path] = PROJECT_ROOT / "outputs"
 
 # ==================== ASL Classes ====================
 ASL_LETTERS: Final[list[str]] = [
-    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
-    "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
-    "U", "V", "W", "X", "Y", "Z",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
 ]
 
 ASL_GESTURES: Final[list[str]] = [
-    "Hello", "ThankYou", "Sorry", "Yes", "No",
+    "Hello",
+    "ThankYou",
+    "Sorry",
+    "Yes",
+    "No",
 ]
 
 ASL_CLASSES: Final[list[str]] = ASL_LETTERS + ASL_GESTURES
@@ -35,27 +62,59 @@ KEYPOINT_DIMS: Final[int] = 3  # x, y, visibility
 
 HAND_KEYPOINTS: Final[list[str]] = [
     "wrist",
-    "thumb_cmc", "thumb_mcp", "thumb_ip", "thumb_tip",
-    "index_mcp", "index_pip", "index_dip", "index_tip",
-    "middle_mcp", "middle_pip", "middle_dip", "middle_tip",
-    "ring_mcp", "ring_pip", "ring_dip", "ring_tip",
-    "pinky_mcp", "pinky_pip", "pinky_dip", "pinky_tip",
+    "thumb_cmc",
+    "thumb_mcp",
+    "thumb_ip",
+    "thumb_tip",
+    "index_mcp",
+    "index_pip",
+    "index_dip",
+    "index_tip",
+    "middle_mcp",
+    "middle_pip",
+    "middle_dip",
+    "middle_tip",
+    "ring_mcp",
+    "ring_pip",
+    "ring_dip",
+    "ring_tip",
+    "pinky_mcp",
+    "pinky_pip",
+    "pinky_dip",
+    "pinky_tip",
 ]
 
 # Skeleton connections for visualization (pairs of keypoint indices)
 HAND_SKELETON: Final[list[tuple[int, int]]] = [
     # Thumb
-    (0, 1), (1, 2), (2, 3), (3, 4),
+    (0, 1),
+    (1, 2),
+    (2, 3),
+    (3, 4),
     # Index
-    (0, 5), (5, 6), (6, 7), (7, 8),
+    (0, 5),
+    (5, 6),
+    (6, 7),
+    (7, 8),
     # Middle
-    (0, 9), (9, 10), (10, 11), (11, 12),
+    (0, 9),
+    (9, 10),
+    (10, 11),
+    (11, 12),
     # Ring
-    (0, 13), (13, 14), (14, 15), (15, 16),
+    (0, 13),
+    (13, 14),
+    (14, 15),
+    (15, 16),
     # Pinky
-    (0, 17), (17, 18), (18, 19), (19, 20),
+    (0, 17),
+    (17, 18),
+    (18, 19),
+    (19, 20),
     # Palm connections
-    (5, 9), (9, 13), (13, 17),
+    (5, 9),
+    (9, 13),
+    (13, 17),
 ]
 
 # Flip indices for horizontal augmentation
@@ -76,11 +135,11 @@ COLORS: Final[dict[str, tuple[int, int, int]]] = {
 
 # Keypoint colors by finger
 FINGER_COLORS: Final[dict[str, tuple[int, int, int]]] = {
-    "thumb": (0, 255, 0),      # Green
-    "index": (255, 0, 0),      # Blue
-    "middle": (0, 255, 255),   # Yellow
-    "ring": (0, 165, 255),     # Orange
-    "pinky": (255, 0, 255),    # Magenta
+    "thumb": (0, 255, 0),  # Green
+    "index": (255, 0, 0),  # Blue
+    "middle": (0, 255, 255),  # Yellow
+    "ring": (0, 165, 255),  # Orange
+    "pinky": (255, 0, 255),  # Magenta
     "wrist": (255, 255, 255),  # White
 }
 

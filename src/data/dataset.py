@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
 
-from src.utils.constants import ASL_CLASSES, DATA_DIR, NUM_KEYPOINTS
+from src.utils.constants import ASL_CLASSES, NUM_KEYPOINTS
 
 
 class ASLKeypointDataset(Dataset):
@@ -239,12 +239,12 @@ class RealtimeKeypointBuffer:
         if method == "mode":
             # Most common prediction
             from collections import Counter
+
             counter = Counter(self.predictions)
             prediction = counter.most_common(1)[0][0]
-            confidence = np.mean([
-                c for p, c in zip(self.predictions, self.confidences)
-                if p == prediction
-            ])
+            confidence = np.mean(
+                [c for p, c in zip(self.predictions, self.confidences) if p == prediction]
+            )
         elif method == "weighted":
             # Weighted by confidence
             weighted_votes = {}

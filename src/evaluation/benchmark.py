@@ -11,7 +11,6 @@ import torch
 from loguru import logger
 
 from src.utils.constants import OUTPUTS_DIR
-from src.utils.device import get_device
 
 
 @dataclass
@@ -107,9 +106,7 @@ class YOLOBenchmark:
         model = YOLO(model_name)
 
         # Create dummy input
-        dummy_input = np.random.randint(
-            0, 255, (image_size, image_size, 3), dtype=np.uint8
-        )
+        dummy_input = np.random.randint(0, 255, (image_size, image_size, 3), dtype=np.uint8)
 
         # Warmup
         logger.debug(f"Warming up for {warmup_iterations} iterations")
@@ -151,8 +148,7 @@ class YOLOBenchmark:
         )
 
         logger.info(
-            f"{model_name} ({device}): "
-            f"{result.mean_latency_ms:.2f} ms ({result.fps:.1f} FPS)"
+            f"{model_name} ({device}): {result.mean_latency_ms:.2f} ms ({result.fps:.1f} FPS)"
         )
 
         return result
@@ -324,7 +320,10 @@ class YOLOBenchmark:
             yolo11_cpu = df[df["model_name"].str.contains("yolo11") & (df["device"] == "cpu")]
 
             if len(yolo26_cpu) > 0 and len(yolo11_cpu) > 0:
-                speedup = yolo11_cpu["mean_latency_ms"].values[0] / yolo26_cpu["mean_latency_ms"].values[0]
+                speedup = (
+                    yolo11_cpu["mean_latency_ms"].values[0]
+                    / yolo26_cpu["mean_latency_ms"].values[0]
+                )
                 report += f"- **CPU Speedup**: YOLO26 is {(speedup-1)*100:.1f}% faster\n"
 
         if output_path:

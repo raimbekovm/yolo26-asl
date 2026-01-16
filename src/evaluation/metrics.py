@@ -3,7 +3,6 @@
 from typing import Optional
 
 import numpy as np
-from loguru import logger
 
 
 def compute_metrics(
@@ -77,11 +76,13 @@ def _get_top_confusions(
     for i in range(len(cm)):
         for j in range(len(cm)):
             if i != j and cm[i, j] > 0:
-                confusions.append({
-                    "true": class_names[i],
-                    "predicted": class_names[j],
-                    "count": int(cm[i, j]),
-                })
+                confusions.append(
+                    {
+                        "true": class_names[i],
+                        "predicted": class_names[j],
+                        "count": int(cm[i, j]),
+                    }
+                )
 
     confusions.sort(key=lambda x: x["count"], reverse=True)
     return confusions[:top_k]

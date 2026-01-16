@@ -1,6 +1,5 @@
 """Dataset download utilities."""
 
-import shutil
 import zipfile
 from pathlib import Path
 from typing import Optional
@@ -144,9 +143,7 @@ class DatasetDownloader:
 
     def _download_file(self, url: str, dest: Path) -> None:
         """Download file with progress bar."""
-        with DownloadProgressBar(
-            unit="B", unit_scale=True, miniters=1, desc=dest.name
-        ) as t:
+        with DownloadProgressBar(unit="B", unit_scale=True, miniters=1, desc=dest.name) as t:
             urlretrieve(url, dest, reporthook=t.update_to)
 
     def _extract_zip(self, zip_path: Path, dest_dir: Path) -> None:

@@ -1,7 +1,7 @@
 """Visualization utilities for keypoints, predictions, and metrics."""
 
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 import cv2
 import matplotlib.pyplot as plt
@@ -85,7 +85,7 @@ def draw_hand_keypoints(
 def _get_finger_color(i: int, j: int) -> tuple[int, int, int]:
     """Get color for a skeleton connection based on finger."""
     finger_ranges = {
-        "thumb": range(0, 5),
+        "thumb": range(5),
         "index": range(5, 9),
         "middle": range(9, 13),
         "ring": range(13, 17),
@@ -103,16 +103,15 @@ def _get_keypoint_color(idx: int) -> tuple[int, int, int]:
     """Get color for a keypoint based on its finger."""
     if idx == 0:
         return FINGER_COLORS["wrist"]
-    elif idx <= 4:
+    if idx <= 4:
         return FINGER_COLORS["thumb"]
-    elif idx <= 8:
+    if idx <= 8:
         return FINGER_COLORS["index"]
-    elif idx <= 12:
+    if idx <= 12:
         return FINGER_COLORS["middle"]
-    elif idx <= 16:
+    if idx <= 16:
         return FINGER_COLORS["ring"]
-    else:
-        return FINGER_COLORS["pinky"]
+    return FINGER_COLORS["pinky"]
 
 
 def draw_prediction(
@@ -268,7 +267,7 @@ def plot_training_curves(
     Returns:
         Matplotlib figure.
     """
-    n_plots = len([k for k in history.keys() if "train" in k])
+    n_plots = len([k for k in history if "train" in k])
     fig, axes = plt.subplots(1, n_plots, figsize=figsize)
 
     if n_plots == 1:

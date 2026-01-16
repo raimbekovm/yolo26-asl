@@ -6,10 +6,9 @@ from typing import Optional
 import cv2
 import gradio as gr
 import numpy as np
-from PIL import Image
 
 from src.models.pipeline import ASLPipeline
-from src.utils.constants import ASL_CLASSES, WEIGHTS_DIR
+from src.utils.constants import WEIGHTS_DIR
 from src.utils.visualization import draw_hand_keypoints, draw_prediction
 
 
@@ -23,7 +22,11 @@ def get_pipeline() -> ASLPipeline:
     if _pipeline is None:
         _pipeline = ASLPipeline(
             pose_model="yolo26n-pose.pt",
-            classifier_model=WEIGHTS_DIR / "asl_classifier.pt" if (WEIGHTS_DIR / "asl_classifier.pt").exists() else None,
+            classifier_model=(
+                WEIGHTS_DIR / "asl_classifier.pt"
+                if (WEIGHTS_DIR / "asl_classifier.pt").exists()
+                else None
+            ),
         )
         _pipeline.warmup()
     return _pipeline
@@ -75,9 +78,7 @@ def predict_image(image: np.ndarray) -> tuple[np.ndarray, str]:
             position=(max(x1, 10), max(y1 - 10, 40)),
         )
 
-        results_text.append(
-            f"Hand {i+1}: **{pred.letter}** ({pred.confidence:.1%} confidence)"
-        )
+        results_text.append(f"Hand {i+1}: **{pred.letter}** ({pred.confidence:.1%} confidence)")
 
     # Convert back to RGB
     annotated_rgb = cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB)
@@ -147,11 +148,15 @@ def create_app() -> gr.Blocks:
 
                 # Examples
                 gr.Examples(
-                    examples=[
-                        ["assets/images/example_a.jpg"],
-                        ["assets/images/example_b.jpg"],
-                        ["assets/images/example_hello.jpg"],
-                    ] if Path("assets/images").exists() else [],
+                    examples=(
+                        [
+                            ["assets/images/example_a.jpg"],
+                            ["assets/images/example_b.jpg"],
+                            ["assets/images/example_hello.jpg"],
+                        ]
+                        if Path("assets/images").exists()
+                        else []
+                    ),
                     inputs=[image_input],
                     outputs=[image_output, text_output],
                     fn=predict_image,

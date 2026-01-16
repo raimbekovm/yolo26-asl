@@ -6,16 +6,16 @@ from typing import Optional
 
 import numpy as np
 import torch
-import torch.nn as nn
 from loguru import logger
+from torch import nn
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from src.data.augmentation import get_train_augmentation, get_val_augmentation
-from src.data.dataset import ASLKeypointDataset, KeypointDataModule
-from src.models.classifier import ASLClassifierMLP, ASLClassifierTransformer, create_classifier
+from src.data.dataset import ASLKeypointDataset
+from src.models.classifier import create_classifier
 from src.utils.constants import ASL_CLASSES, OUTPUTS_DIR, WEIGHTS_DIR
 from src.utils.device import get_device, set_seed
 
@@ -147,9 +147,7 @@ class ClassifierTrainer:
 
         for epoch in range(epochs):
             # Training
-            train_loss, train_acc = self._train_epoch(
-                train_loader, criterion, optimizer
-            )
+            train_loss, train_acc = self._train_epoch(train_loader, criterion, optimizer)
 
             # Validation
             val_loss, val_acc = self._validate(val_loader, criterion)
@@ -211,6 +209,7 @@ class ClassifierTrainer:
             target = WEIGHTS_DIR / "asl_classifier.pt"
             target.parent.mkdir(parents=True, exist_ok=True)
             import shutil
+
             shutil.copy(best_weights, target)
             logger.info(f"Best model saved to {target}")
 
