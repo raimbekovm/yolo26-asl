@@ -1,6 +1,7 @@
 """YOLO26 ASL Detection Demo"""
 import gradio as gr
 from ultralytics import YOLO
+from PIL import Image
 import os
 
 CLASSES = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -17,7 +18,8 @@ def detect(image, conf=0.25):
     if image is None:
         return None, "Upload an image"
     results = model.predict(image, conf=conf, verbose=False)[0]
-    annotated = results.plot()
+    annotated_bgr = results.plot()
+    annotated = annotated_bgr[..., ::-1]  # BGR to RGB
     if results.boxes is not None and len(results.boxes) > 0:
         text = f"**{len(results.boxes)} detections**\n"
         for box in results.boxes:
