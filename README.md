@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">YOLO26-ASL</h1>
   <p align="center">
-    <strong>Real-time American Sign Language Recognition using YOLO26-pose</strong>
+    <strong>Real-time American Sign Language Detection with YOLO26</strong>
   </p>
 </p>
 
@@ -24,48 +24,59 @@
 </p>
 
 <p align="center">
-  <img src="assets/gifs/demo.gif" alt="Demo GIF" width="600">
+  <a href="https://huggingface.co/spaces/raimbekovm/yolo26-asl">
+    <img src="https://img.shields.io/badge/🤗%20Live%20Demo-HuggingFace%20Spaces-yellow?style=for-the-badge" alt="Live Demo">
+  </a>
 </p>
 
 ---
 
 ## Overview
 
-**YOLO26-ASL** is a production-ready system for real-time American Sign Language (ASL) alphabet recognition. It combines the latest [YOLO26-pose](https://docs.ultralytics.com/models/yolo26/) model for hand keypoint detection with a lightweight classifier for letter recognition.
+**YOLO26-ASL** benchmarks [YOLO26](https://docs.ultralytics.com/models/yolo26/) against YOLO11 on American Sign Language (ASL) letter detection. This project trains and evaluates both models on the same dataset to provide an honest comparison.
 
 ### Key Features
 
 | Feature | Description |
 |---------|-------------|
-| **YOLO26-pose** | Latest Ultralytics model with NMS-free end-to-end architecture |
-| **43% Faster CPU** | Optimized inference for edge devices |
-| **21 Hand Keypoints** | Precise keypoint detection using RLE (Residual Log-Likelihood Estimation) |
-| **31 Classes** | 26 ASL letters (A-Z) + 5 gestures (Hello, Thank You, Sorry, Yes, No) |
-| **Real-time** | 25+ FPS on CPU, 100+ FPS on GPU |
+| **YOLO26 vs YOLO11** | Fair benchmark comparison on ASL detection |
+| **26 Classes** | A-Z letter detection with bounding boxes |
+| **Real Benchmarks** | Actual training results on Kaggle T4 GPU |
 | **Production Ready** | Gradio demo, Docker support, HuggingFace Spaces |
 
 ---
 
-## Architecture
+## Benchmark Results
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         YOLO26-ASL Pipeline                              │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  ┌──────────┐    ┌─────────────────┐    ┌──────────────┐    ┌────────┐ │
-│  │  Input   │───▶│  YOLO26-pose    │───▶│  Keypoint    │───▶│  ASL   │ │
-│  │  Image   │    │  Hand Detection │    │  Classifier  │    │ Letter │ │
-│  └──────────┘    │  (21 keypoints) │    │  (MLP)       │    └────────┘ │
-│                  └─────────────────┘    └──────────────┘                │
-│                                                                          │
-│  YOLO26 Advantages:                                                     │
-│  • NMS-free end-to-end architecture                                     │
-│  • 43% faster CPU inference vs YOLO11                                   │
-│  • RLE for precise keypoint localization                                │
-│  • DFL-free design for edge deployment                                  │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+### YOLO26n vs YOLO11n on ASL Detection
+
+Trained on [American Sign Language Letters](https://universe.roboflow.com/david-lee-d0rhs/american-sign-language-letters) dataset (504 train / 144 val / 72 test images).
+
+| Metric | YOLO26n | YOLO11n | Winner |
+|--------|---------|---------|--------|
+| **mAP50** | 0.751 | **0.906** | YOLO11 |
+| **mAP50-95** | 0.715 | **0.860** | YOLO11 |
+| **GPU Inference** | 13.1 ms | **11.6 ms** | YOLO11 |
+| **GPU FPS** | 76 | **86** | YOLO11 |
+| **CPU Inference** | **122.8 ms** | 127.2 ms | YOLO26 |
+| **CPU FPS** | **8.1** | 7.9 | YOLO26 |
+| **Parameters** | **2.57M** | 2.62M | YOLO26 |
+
+### Key Findings
+
+- **YOLO11n achieves +15.5% higher mAP50** on this small dataset
+- **YOLO26n is 3.6% faster on CPU** - beneficial for edge deployment
+- Both models achieve real-time performance on GPU (>75 FPS)
+- Small dataset (504 images) may favor YOLO11's architecture
+- YOLO26 has slightly fewer parameters (2% less)
+
+### Hardware & Training
+
+- **GPU**: Tesla T4 (Kaggle)
+- **Epochs**: 100
+- **Batch Size**: 16
+- **Image Size**: 640×640
+- **Augmentation**: Mosaic + MixUp
 
 ---
 
@@ -81,7 +92,6 @@ cd yolo26-asl
 # Create virtual environment
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
-# or: venv\Scripts\activate  # Windows
 
 # Install dependencies
 pip install -e ".[app]"
@@ -91,78 +101,60 @@ pip install -e ".[app]"
 
 ```bash
 # Launch Gradio app
-make app
-
-# Or with Python
 python -m app.main --share
+```
+
+### Download Trained Weights
+
+```bash
+# Option 1: Already included in weights/
+ls weights/yolo26n_asl.pt
+
+# Option 2: Download from HuggingFace
+wget https://huggingface.co/spaces/raimbekovm/yolo26-asl/resolve/main/yolo26n_asl.pt
 ```
 
 ### Quick Inference
 
 ```python
-from src.inference import ASLPredictor
+from ultralytics import YOLO
 
-predictor = ASLPredictor()
-letter, confidence = predictor.predict_with_confidence("path/to/image.jpg")
-print(f"Predicted: {letter} ({confidence:.1%})")
+# Load trained model
+model = YOLO("weights/yolo26n_asl.pt")
+
+# Run inference
+results = model("path/to/hand_sign.jpg")
+results[0].show()
 ```
-
----
-
-## Benchmarks
-
-### YOLO26 vs YOLO11 (Hand Pose Estimation)
-
-| Model | CPU (ms) | GPU (ms) | mAP50 | Parameters |
-|-------|----------|----------|-------|------------|
-| **YOLO26n-pose** | **40.3** | **1.8** | 57.2 | 2.9M |
-| YOLO11n-pose | 71.2 | 2.1 | 56.8 | 2.6M |
-| **YOLO26s-pose** | **85.3** | **2.4** | 63.0 | 10.4M |
-| YOLO11s-pose | 142.1 | 3.2 | 62.4 | 9.4M |
-
-**Key Findings:**
-- YOLO26n is **43% faster** on CPU than YOLO11n
-- Comparable or better accuracy
-- NMS-free architecture simplifies deployment
-
-### ASL Classification Accuracy
-
-| Model | Accuracy | F1 Score | Inference |
-|-------|----------|----------|-----------|
-| MLP (256-128-64) | 98.2% | 97.9% | <1ms |
-| Transformer | 98.5% | 98.1% | 2ms |
 
 ---
 
 ## Training
 
-### Full Pipeline
+### Run on Kaggle (Recommended)
+
+1. Open [notebooks/kaggle_yolo26_asl.ipynb](notebooks/kaggle_yolo26_asl.ipynb)
+2. Upload to Kaggle
+3. Enable GPU accelerator (T4)
+4. Run all cells
+
+### Local Training
 
 ```bash
-# Download datasets
-make download-data
+# Download dataset
+pip install roboflow
+python -c "
+from roboflow import Roboflow
+rf = Roboflow(api_key='YOUR_KEY')
+project = rf.workspace('david-lee-d0rhs').project('american-sign-language-letters')
+dataset = project.version(6).download('yolov8')
+"
 
-# Run full training pipeline
-python -m src.training.trainer \
-    --pose-epochs 100 \
-    --classifier-epochs 50 \
-    --classifier-type mlp
-```
+# Train YOLO26
+yolo detect train model=yolo26n.pt data=data/asl_dataset.yaml epochs=100 imgsz=640
 
-### Train Components Separately
-
-```bash
-# 1. Fine-tune YOLO26-pose for hands
-python -m src.training.train_pose --epochs 100
-
-# 2. Extract keypoints from SignAlphaSet
-python -m src.data.preprocess
-
-# 3. Train classifier
-python -m src.training.train_classifier \
-    --data-dir data/processed/classifier_dataset \
-    --model-type mlp \
-    --epochs 50
+# Train YOLO11 (baseline)
+yolo detect train model=yolo11n.pt data=data/asl_dataset.yaml epochs=100 imgsz=640
 ```
 
 ---
@@ -171,82 +163,28 @@ python -m src.training.train_classifier \
 
 ```
 yolo26-asl/
-├── configs/              # Hydra configuration files
-│   ├── data/            # Dataset configs
-│   ├── model/           # Model configs
-│   ├── training/        # Training configs
-│   └── config.yaml      # Main config
-├── src/                  # Source code
-│   ├── data/            # Data loading and preprocessing
-│   ├── models/          # Model definitions
-│   ├── training/        # Training scripts
-│   ├── inference/       # Inference utilities
-│   └── evaluation/      # Benchmarking
 ├── app/                  # Gradio web application
-├── notebooks/            # Jupyter notebooks
-├── tests/               # Unit tests
-└── docker/              # Docker configurations
+├── configs/              # Configuration files
+├── data/                 # Dataset configs
+├── docker/               # Docker configurations
+├── notebooks/            # Kaggle benchmark notebook
+│   └── kaggle_yolo26_asl.ipynb
+├── src/                  # Source code
+├── tests/                # Unit tests
+└── weights/              # Trained model weights
+    └── yolo26n_asl.pt    # Trained on ASL dataset (5.2MB)
 ```
 
 ---
 
-## Datasets
+## Dataset
 
-This project uses two datasets:
-
-1. **[SignAlphaSet](https://data.mendeley.com/datasets/8fmvr9m98w/3)** (26,000 images)
-   - ASL alphabet A-Z + 5 gestures
-   - HD resolution (1080×1920)
-   - Multiple hand positions and lighting
-
-2. **[Ultralytics Hand Keypoints](https://docs.ultralytics.com/datasets/pose/hand-keypoints/)** (26,768 images)
-   - 21 keypoints per hand
-   - MediaPipe-annotated
-   - Diverse backgrounds
-
----
-
-## API Reference
-
-### ASLPredictor
-
-```python
-from src.inference import ASLPredictor
-
-# Initialize
-predictor = ASLPredictor(
-    pose_model="yolo26n-pose.pt",
-    classifier_model="weights/asl_classifier.pt",
-    device="cuda",  # or "cpu", "mps"
-    conf_threshold=0.5,
-)
-
-# Single prediction
-letter = predictor("image.jpg")
-
-# With confidence
-letter, conf = predictor.predict_with_confidence("image.jpg")
-
-# Batch prediction
-letters = predictor.predict_batch(["img1.jpg", "img2.jpg"])
-
-# Benchmark
-stats = predictor.benchmark(num_iterations=100)
-print(f"FPS: {stats['fps']:.1f}")
-```
-
-### Real-time Webcam
-
-```python
-from src.inference import RealtimeASL
-
-realtime = RealtimeASL(
-    camera_id=0,
-    width=1280,
-    height=720,
-)
-realtime.run()  # Opens webcam window
-```
+**American Sign Language Letters** from Roboflow Universe:
+- **Classes**: 26 (A-Z)
+- **Train**: 504 images
+- **Validation**: 144 images
+- **Test**: 72 images
+- **Format**: YOLOv8 (bounding boxes)
 
 ---
 
@@ -258,42 +196,16 @@ docker build -t yolo26-asl -f docker/Dockerfile .
 
 # Run container
 docker run -p 7860:7860 yolo26-asl
-
-# With GPU
-docker run --gpus all -p 7860:7860 yolo26-asl:gpu
-```
-
----
-
-## HuggingFace Spaces
-
-Deploy to HuggingFace Spaces:
-
-```bash
-# Install huggingface_hub
-pip install huggingface_hub
-
-# Login
-huggingface-cli login
-
-# Create space
-huggingface-cli repo create yolo26-asl --type space --space-sdk gradio
-
-# Push code
-git remote add hf https://huggingface.co/spaces/raimbekovm/yolo26-asl
-git push hf main
 ```
 
 ---
 
 ## Citation
 
-If you use this project, please cite:
-
 ```bibtex
 @software{yolo26_asl,
   author = {Murat Raimbekov},
-  title = {YOLO26-ASL: Real-time ASL Recognition with YOLO26-pose},
+  title = {YOLO26-ASL: ASL Detection Benchmark with YOLO26},
   year = {2026},
   url = {https://github.com/raimbekovm/yolo26-asl}
 }
@@ -303,15 +215,15 @@ If you use this project, please cite:
 
 ## Acknowledgments
 
-- [Ultralytics](https://ultralytics.com/) for YOLO26
-- [SignAlphaSet](https://data.mendeley.com/datasets/8fmvr9m98w/3) dataset creators
-- [Google MediaPipe](https://mediapipe.dev/) for hand keypoint annotations
+- [Ultralytics](https://ultralytics.com/) for YOLO26 and YOLO11
+- [Roboflow](https://roboflow.com/) for ASL dataset hosting
+- [Kaggle](https://kaggle.com/) for free GPU compute
 
 ---
 
 ## License
 
-This project is licensed under the Apache 2.0 License - see [LICENSE](LICENSE) file.
+Apache 2.0 License - see [LICENSE](LICENSE) file.
 
 ---
 

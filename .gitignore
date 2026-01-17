@@ -87,6 +87,7 @@ datasets/
 # Model weights
 *.pt
 *.pth
+!weights/*.pt
 *.onnx
 *.engine
 *.tflite
