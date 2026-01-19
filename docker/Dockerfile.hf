@@ -1,7 +1,7 @@
 # YOLO26-ASL - HuggingFace Spaces Dockerfile
 # Optimized for HF Spaces deployment
 
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 
